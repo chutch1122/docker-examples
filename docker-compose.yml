@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  mysql:
+    image: mysql:5.7.21
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=password
+      - MYSQL_DATABASE=example_prod
+      - MYSQL_USER=example
+      - MYSQL_PASSWORD=potatoes
+    volumes:
+      - ~/docker/data/mysql:/var/lib/mysql
+
+  redis:
+    image: redis:alpine
+    restart: always
+    ports:
+     - "6379:6379"
+    volumes:
+      - ~/docker/data/redis:/data
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    environment:
+     - PMA_ARBITRARY=1
+    ports:
+     - "3307:80"
+
+  solr:
+    image: solr:alpine
+    restart: always
+    ports:
+      - "8983:8983"
+
+  node-app:
+    build: ./node-app
+    restart: always
+    ports:
+      - "8000:8080"
+
+  java-app:
+    build: ./java-app
+    restart: always
+    ports:
+      - "8001:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+      - APP_STR=Hello from docker-compose!
+
+  angular-app:
+    build: ./angular-app
+    restart: always
+    ports:
+      - "8002:80"
+
+  php-app:
+    build: ./php-app
+    restart: always
+    ports:
+      - "8003:80"
